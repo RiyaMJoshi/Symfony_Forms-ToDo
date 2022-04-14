@@ -15,7 +15,9 @@ class TaskType extends AbstractType
     {
         $builder
             ->add('task', TextType::class)
-            ->add('dueDate', DateType::class)
+            ->add('dueDate', DateType::class, [
+                'required' => $options['require_due_date'],
+            ])
             ->add('save', SubmitType::class)
         ;
     }
@@ -24,7 +26,12 @@ class TaskType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Task::class,
+            'require_due_date' => false
         ]);
+
+        // you can also define the allowed types, allowed values and
+        // any other feature supported by the OptionsResolver component
+        $resolver->setAllowedTypes('require_due_date', 'bool');
     }
 }
 

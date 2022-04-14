@@ -18,18 +18,41 @@ class TaskController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        // creates a task object and initializes some data for this example
+        // just set up a fresh $task object (remove the example data)
         $task = new Task();
-        $task->setTask('Write a blog post');
-        $task->setDueDate(new \DateTime('tomorrow'));
+        // $task->setTask('Write a blog post');
+        // $task->setDueDate(new \DateTime('tomorrow'));
 
-        $form = $this->createForm(TaskType::class, $task);
+        // use some PHP logic to decide if this form field is required or not
+        $dueDateIsRequired = "Please set a due date";
+
+        $form = $this->createForm(TaskType::class, $task, [
+            'require_due_date' => true
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // $form->getData() holds the submitted values
+            // but, the original `$task` variable has also been updated
+            $task = $form->getData();
+
+             // ... perform some action, such as saving the task to the database
+             return $this->redirectToRoute('task_success');
+        }
 
         return $this->renderForm('task/new.html.twig', [
             'form' => $form,
         ]);
 
-        // ...
+    }
+
+    /**
+     * @Route("/success", name="task_success")
+     */
+    public function success(): void
+    {
+        
     }
 }
 
